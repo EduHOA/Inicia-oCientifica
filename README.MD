@@ -25,4 +25,4 @@ Este projeto está atualmente em **fase beta**. As páginas estão disponíveis 
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/MatheusInacio-Git/SiteQUIZ
+   git clone https://github.com/EduHOA/Inicia-oCientifica.git
