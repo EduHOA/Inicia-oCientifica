@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <!-- Meta tags Obrigatórias -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
+ 
+  <!-- CSS Personalizado -->
+  <link rel="stylesheet" href="./css/paginaQuiz.css">
+
+  <title>Quiz Socio Tech</title>
+</head>
+<body>
+  <!-- Container principal -->
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="quiz-card p-4 text-center">
+      <h2 class="quiz-title titulo">Quiz Socio Tech</h2>
+      <h4 class="quiz-question">O que a imagem a seguir te faz sentir?</h4>
+      
+      <div class="quiz-image">
+        <img id="quizImage" src="" alt="Imagem do Quiz" class="img-fluid">
+      </div>
+      
+      <div class="quiz-options mt-4" id="quizOptions">
+        <!-- As opções serão geradas dinamicamente aqui -->
+      </div>
+      
+      <button id="nextButton" class="btn btn-secondary mt-4">Próxima Imagem</button>
+      <button id="submitButton" class="btn btn-success mt-4">Finalizar Quiz</button> <!-- Botão para finalizar -->
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        image: './css/img/im01.jpg',
+        options: [
+          { text: 'A) Tristeza' },
+          { text: 'B) Alegria' },
+          { text: 'C) Medo' },
+          { text: 'D) Surpresa' },
+          { text: 'E) Raiva' },
+          { text: 'F) Nojo' },
+          { text: 'G) Expectativa' }
+        ]
+      },
+      {
+        image: './css/img/im02.jpg',
+        options: [
+          { text: 'A) Tristeza' },
+          { text: 'B) Alegria' },
+          { text: 'C) Medo' },
+          { text: 'D) Surpresa' },
+          { text: 'E) Raiva' },
+          { text: 'F) Nojo' },
+          { text: 'G) Expectativa' }
+        ]
+      },
+      // Adicione mais imagens e opções conforme necessário
+    ];
+
+    let currentIndex = 0;
+    const userResponses = []; // Array para armazenar as emoções escolhidas
+
+    function loadQuiz() {
+      if (currentIndex < quizData.length) {
+        const currentQuiz = quizData[currentIndex];
+        document.getElementById('quizImage').src = currentQuiz.image;
+
+        const optionsContainer = document.getElementById('quizOptions');
+        optionsContainer.innerHTML = '';
+
+        currentQuiz.options.forEach((option) => {
+          const button = document.createElement('button');
+          button.className = 'btn btn-primary btn-lg mb-2';
+          button.innerText = option.text;
+          button.onclick = () => handleOptionClick(option.text);
+          optionsContainer.appendChild(button);
+        });
+      } else {
+        alert('Você completou o quiz!'); // Mensagem ao completar o quiz
+      }
+    }
+
+    function handleOptionClick(selectedEmotion) {
+      const emotion = selectedEmotion.split(')')[1].trim();
+      userResponses.push(emotion); // Armazena a emoção escolhida
+      currentIndex++;
+      loadQuiz();
+    }
+
+    async function submitResponses() {
+      const nome = localStorage.getItem('nome'); // Recupera o nome do localStorage
+      const dataNascimento = localStorage.getItem('dataNascimento'); // Recupera a data de nascimento
+
+      const data = {
+        nome,
+        dataNascimento,
+        emotions: userResponses // Enviar o array completo de emoções
+      };
+      
+      try {
+        const response = await fetch('http://localhost:5000/api/users/cadastro', { // Ajuste a URL conforme necessário
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+  
+        if (response.ok) {
+          console.log('Dados do usuário e emoções salvos com sucesso!');
+          window.location.href = 'paginaFinal.html'; // Redireciona para a página de agradecimento
+        } else {
+          console.error('Erro ao salvar os dados:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Erro ao enviar os dados:', error);
+      }
+    }
+
+    // Ação do botão de finalizar o quiz
+    document.getElementById('submitButton').onclick = () => {
+      submitResponses(); // Envia as respostas do quiz
+    };
+
+    document.getElementById('nextButton').onclick = () => {
+      currentIndex++;
+      loadQuiz();
+    };
+
+    loadQuiz(); // Carrega a primeira imagem ao iniciar
+
+  </script>
+  
+  <!-- JavaScript (Opcional) -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+</html>
