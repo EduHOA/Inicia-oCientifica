@@ -41,25 +41,31 @@
       {
         image: './css/img/im01.jpg',
         options: [
-          { text: 'A) Tristeza' },
-          { text: 'B) Alegria' },
-          { text: 'C) Medo' },
-          { text: 'D) Surpresa' },
-          { text: 'E) Raiva' },
-          { text: 'F) Nojo' },
-          { text: 'G) Expectativa' }
+        { text: ' Tristeza' },
+        { text: ' Alegria' },
+        { text: ' Medo' },
+        { text: ' Surpresa' },
+        { text: ' Raiva' },
+        { text: ' Nojo' },
+        { text: ' Interesse' },
+        { text: ' Nostalgia' },
+        { text: ' Calma' },
+        { text: ' excitação' }
         ]
       },
       {
         image: './css/img/im02.jpg',
         options: [
-          { text: 'A) Tristeza' },
-          { text: 'B) Alegria' },
-          { text: 'C) Medo' },
-          { text: 'D) Surpresa' },
-          { text: 'E) Raiva' },
-          { text: 'F) Nojo' },
-          { text: 'G) Expectativa' }
+        { text: ' Tristeza' },
+        { text: ' Alegria' },
+        { text: ' Medo' },
+        { text: ' Surpresa' },
+        { text: ' Raiva' },
+        { text: ' Nojo' },
+        { text: ' Interesse' },
+        { text: ' Nostalgia' },
+        { text: ' Calma' },
+        { text: ' excitação' }
         ]
       },
       // Adicione mais imagens e opções conforme necessário
@@ -89,31 +95,36 @@
     }
 
     function handleOptionClick(selectedEmotion) {
-      const emotion = selectedEmotion.split(')')[1].trim();
+      const emotion = selectedEmotion.trim(); // Remove espaços
       userResponses.push(emotion); // Armazena a emoção escolhida
       currentIndex++;
       loadQuiz();
-    }
+    }    
 
     async function submitResponses() {
-      const nome = localStorage.getItem('nome'); // Recupera o nome do localStorage
-      const dataNascimento = localStorage.getItem('dataNascimento'); // Recupera a data de nascimento
-
+      const nome = localStorage.getItem('nome');
+      const dataNascimento = localStorage.getItem('dataNascimento');
+    
+      if (!nome || !dataNascimento) {
+        alert('Por favor, preencha seu nome e data de nascimento antes de finalizar o quiz.');
+        return;
+      }
+    
       const data = {
         nome,
         dataNascimento,
         emotions: userResponses // Enviar o array completo de emoções
       };
-      
+    
       try {
-        const response = await fetch('http://localhost:5000/api/users/cadastro', { // Ajuste a URL conforme necessário
+        const response = await fetch('http://localhost:5000/api/users/cadastro', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(data)
         });
-  
+    
         if (response.ok) {
           console.log('Dados do usuário e emoções salvos com sucesso!');
           window.location.href = 'paginaFinal.html'; // Redireciona para a página de agradecimento
@@ -124,6 +135,7 @@
         console.error('Erro ao enviar os dados:', error);
       }
     }
+    
 
     // Ação do botão de finalizar o quiz
     document.getElementById('submitButton').onclick = () => {
@@ -133,7 +145,7 @@
     document.getElementById('nextButton').onclick = () => {
       currentIndex++;
       loadQuiz();
-    };
+    };    
 
     loadQuiz(); // Carrega a primeira imagem ao iniciar
 
